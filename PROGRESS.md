@@ -38,6 +38,17 @@
   - Người chơi nếu không bấm chơi game (chỉ ngồi học), thanh tập trung (100%) sẽ tự động tụt dần (~7%/s).
   - Bấm nút chơi game sẽ giúp xả stress, hồi phục độ tập trung (~10%/s).
   - Khi thanh tập trung tụt về 0%: Người chơi rơi vào trạng thái "Bị nghiện game", tự động chuyển sang chơi game vĩnh viễn và bị khoá hoàn toàn, không thể quay về học lại được dù có bấm hay thả nút!
+- [x] **Tích hợp Hệ Thống Âm Thanh Đa Dạng (Sound Effects):**
+  - Sử dụng Web Audio API tích hợp sẵn, không lo thiếu asset:
+    - 🎵 Âm thanh khởi động trận đấu (Game Start chime).
+    - ⌨️ Tiếng gõ phím lách cách khi đang chăm chỉ học code.
+    - 🕹️ Tiếng 8-bit blip vui nhộn khi lén cày game.
+    - ⚠️ Còi kép cảnh báo khi Mentor chuẩn bị ngước nhìn.
+    - 🚨 Còi báo động khẩn cấp khi Mentor ngẩng đầu quan sát.
+    - 😵 Âm thanh tụt nốt bi đát khi mất tập trung và rơi vào trạng thái nghiện game.
+    - 💀 Đoạn nhạc thất bại Game Over bi tráng khi bị bắt bài.
+    - 🏆 Đoạn nhạc kèn chiến thắng (Victory Fanfare) hào hùng khi sống sót trọn vẹn 3 phút.
+    - 🔊 Nút bật/tắt âm thanh (Mute/Unmute) trên HUD góc phải.
 - [x] **Cập nhật đồ họa nhân vật & lớp học (Graphics Upgrade):**
   - Đã thiết kế bộ Vector SVG sắc nét tái hiện đúng chuẩn 1 lớp học CodeGym với bục giảng, bảng xanh, bàn ghế và laptop:
     - `mentor-safe.svg`: Mentor cắm cúi code bên chiếc laptop trên bàn giảng, bảng xanh CodeGym phía sau.

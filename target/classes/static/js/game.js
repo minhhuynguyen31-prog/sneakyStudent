@@ -45,10 +45,28 @@ document.addEventListener('DOMContentLoaded', () => {
     const btnRetryLose  = document.getElementById('btn-retry-lose');
     const btnRetryWin   = document.getElementById('btn-retry-win');
 
+    // Sound toggle
+    const btnToggleSound = document.getElementById('btn-toggle-sound');
+    const soundIcon      = document.getElementById('sound-icon');
+    let isSoundMuted = false;
+
+    if (btnToggleSound) {
+        btnToggleSound.addEventListener('click', () => {
+            isSoundMuted = !isSoundMuted;
+            soundIcon.textContent = isSoundMuted ? '🔇' : '🔊';
+            btnToggleSound.classList.toggle('muted', isSoundMuted);
+            btnToggleSound.title = isSoundMuted ? 'Bật âm thanh' : 'Tắt âm thanh';
+        });
+    }
+
     // =========================================================
     // --- START SCREEN LOGIC ---
     // =========================================================
     const showGameUI = () => {
+        // Kích hoạt AudioContext từ thao tác click của người dùng
+        getAudioContext();
+        SoundEffects.gameStart();
+
         // Hiệu ứng slide màn Start lên trên
         screenStart.classList.add('slide-out');
 
@@ -116,24 +134,197 @@ document.addEventListener('DOMContentLoaded', () => {
     let mentorCycleTimeout = null;
     let gameLoopFrame = null;
 
-    // --- 3. Audio & Haptic Feedback (Optional Web Audio API Beeps) ---
-    const playTone = (frequency, duration, type = 'sine') => {
-        try {
+    // =========================================================
+    // --- 3. ÂM THANH DỰ ÁN (SYNTHESIZED SOUND EFFECTS) ---
+    // Sử dụng Web Audio API không phụ thuộc tải file mp3 bên ngoài
+    // =========================================================
+    let audioCtx = null;
+    const getAudioContext = () => {
+        if (!audioCtx) {
             const AudioContext = window.AudioContext || window.webkitAudioContext;
-            if (!AudioContext) return;
-            const ctx = new AudioContext();
+            if (AudioContext) audioCtx = new AudioContext();
+        }
+        if (audioCtx && audioCtx.state === 'suspended') {
+            audioCtx.resume();
+        }
+        return audioCtx;
+    };
+
+    const SoundEffects = {
+        // Tiếng gõ phím lách cách khi đang chăm chỉ học code
+        keyboardTyping: () => {
+            if (isSoundMuted) return;
+            const ctx = getAudioContext();
+            if (!ctx) return;
+            const now = ctx.currentTime;
             const osc = ctx.createOscillator();
             const gain = ctx.createGain();
-            osc.type = type;
-            osc.frequency.value = frequency;
+            const freq = 1200 + (Math.random() * 800 - 400); // 800Hz - 1600Hz
+            osc.type = 'triangle';
+            osc.frequency.setValueAtTime(freq, now);
+            gain.gain.setValueAtTime(0.015, now);
+            gain.gain.exponentialRampToValueAtTime(0.0001, now + 0.04);
             osc.connect(gain);
             gain.connect(ctx.destination);
-            gain.gain.setValueAtTime(0.05, ctx.currentTime);
-            gain.gain.exponentialRampToValueAtTime(0.00001, ctx.currentTime + duration);
-            osc.start();
-            osc.stop(ctx.currentTime + duration);
-        } catch (e) {
-            // Audio not allowed or unsupported
+            osc.start(now);
+            osc.stop(now + 0.04);
+        },
+
+        // Tiếng 8-bit coin / điểm số vui nhộn khi lén chơi game
+        gamingBlip: () => {
+            if (isSoundMuted) return;
+            const ctx = getAudioContext();
+            if (!ctx) return;
+            const now = ctx.currentTime;
+            const osc = ctx.createOscillator();
+            const gain = ctx.createGain();
+            osc.type = 'square';
+            const notes = [523.25, 659.25, 783.99, 1046.50]; // C5, E5, G5, C6
+            const note = notes[Math.floor(Math.random() * notes.length)];
+            osc.frequency.setValueAtTime(note, now);
+            osc.frequency.exponentialRampToValueAtTime(note * 1.5, now + 0.08);
+            gain.gain.setValueAtTime(0.03, now);
+            gain.gain.exponentialRampToValueAtTime(0.0001, now + 0.08);
+            osc.connect(gain);
+            gain.connect(ctx.destination);
+            osc.start(now);
+            osc.stop(now + 0.08);
+        },
+
+        // Tiếng bấm nút Bắt Đầu (Game Start chime)
+        gameStart: () => {
+            if (isSoundMuted) return;
+            const ctx = getAudioContext();
+            if (!ctx) return;
+            const now = ctx.currentTime;
+            const chord = [261.63, 329.63, 392.00, 523.25]; // C major
+            chord.forEach((freq, idx) => {
+                const osc = ctx.createOscillator();
+                const gain = ctx.createGain();
+                osc.type = 'triangle';
+                osc.frequency.setValueAtTime(freq, now + idx * 0.08);
+                gain.gain.setValueAtTime(0.06, now + idx * 0.08);
+                gain.gain.exponentialRampToValueAtTime(0.0001, now + idx * 0.08 + 0.35);
+                osc.connect(gain);
+                gain.connect(ctx.destination);
+                osc.start(now + idx * 0.08);
+                osc.stop(now + idx * 0.08 + 0.35);
+            });
+        },
+
+        // Còi cảnh báo Mentor sắp ngước nhìn
+        mentorWarning: () => {
+            if (isSoundMuted) return;
+            const ctx = getAudioContext();
+            if (!ctx) return;
+            const now = ctx.currentTime;
+            for (let i = 0; i < 2; i++) {
+                const osc = ctx.createOscillator();
+                const gain = ctx.createGain();
+                osc.type = 'sawtooth';
+                const startTime = now + i * 0.15;
+                osc.frequency.setValueAtTime(440, startTime);
+                osc.frequency.exponentialRampToValueAtTime(880, startTime + 0.12);
+                gain.gain.setValueAtTime(0.08, startTime);
+                gain.gain.exponentialRampToValueAtTime(0.001, startTime + 0.12);
+                osc.connect(gain);
+                gain.connect(ctx.destination);
+                osc.start(startTime);
+                osc.stop(startTime + 0.12);
+            }
+        },
+
+        // Còi báo động khi Mentor ngẩng đầu quan sát
+        mentorWatching: () => {
+            if (isSoundMuted) return;
+            const ctx = getAudioContext();
+            if (!ctx) return;
+            const now = ctx.currentTime;
+            const osc = ctx.createOscillator();
+            const gain = ctx.createGain();
+            osc.type = 'sawtooth';
+            osc.frequency.setValueAtTime(880, now);
+            osc.frequency.linearRampToValueAtTime(660, now + 0.25);
+            gain.gain.setValueAtTime(0.09, now);
+            gain.gain.exponentialRampToValueAtTime(0.001, now + 0.3);
+            osc.connect(gain);
+            gain.connect(ctx.destination);
+            osc.start(now);
+            osc.stop(now + 0.3);
+        },
+
+        // Âm thanh khi thanh tập trung về 0% (Bị nghiện game)
+        focusLostAddicted: () => {
+            if (isSoundMuted) return;
+            const ctx = getAudioContext();
+            if (!ctx) return;
+            const now = ctx.currentTime;
+            const tones = [400, 320, 250, 180];
+            tones.forEach((freq, idx) => {
+                const osc = ctx.createOscillator();
+                const gain = ctx.createGain();
+                osc.type = 'sawtooth';
+                const startTime = now + idx * 0.12;
+                osc.frequency.setValueAtTime(freq, startTime);
+                gain.gain.setValueAtTime(0.07, startTime);
+                gain.gain.exponentialRampToValueAtTime(0.001, startTime + 0.15);
+                osc.connect(gain);
+                gain.connect(ctx.destination);
+                osc.start(startTime);
+                osc.stop(startTime + 0.15);
+            });
+        },
+
+        // Nhạc GameOver bi tráng khi bị Mentor bắt bài
+        gameOver: () => {
+            if (isSoundMuted) return;
+            const ctx = getAudioContext();
+            if (!ctx) return;
+            const now = ctx.currentTime;
+            const sadNotes = [330, 311, 293, 277, 220]; // Mi, Re#, Re, Do#, La
+            sadNotes.forEach((freq, idx) => {
+                const osc = ctx.createOscillator();
+                const gain = ctx.createGain();
+                osc.type = 'sawtooth';
+                const startTime = now + idx * 0.18;
+                osc.frequency.setValueAtTime(freq, startTime);
+                gain.gain.setValueAtTime(0.1, startTime);
+                gain.gain.exponentialRampToValueAtTime(0.001, startTime + 0.25);
+                osc.connect(gain);
+                gain.connect(ctx.destination);
+                osc.start(startTime);
+                osc.stop(startTime + 0.25);
+            });
+        },
+
+        // Nhạc chiến thắng hào hùng (Victory Fanfare) khi sống sót qua 3 phút
+        victoryFanfare: () => {
+            if (isSoundMuted) return;
+            const ctx = getAudioContext();
+            if (!ctx) return;
+            const now = ctx.currentTime;
+            // Nhịp điệu chiến thắng: Sol, Sol, Sol, Đô (ngân dài)
+            const fanfare = [
+                { f: 523.25, d: 0.12, t: 0 },
+                { f: 523.25, d: 0.12, t: 0.14 },
+                { f: 523.25, d: 0.12, t: 0.28 },
+                { f: 659.25, d: 0.35, t: 0.42 },
+                { f: 587.33, d: 0.15, t: 0.8 },
+                { f: 783.99, d: 0.6,  t: 0.98 }
+            ];
+            fanfare.forEach(item => {
+                const osc = ctx.createOscillator();
+                const gain = ctx.createGain();
+                osc.type = 'triangle';
+                const startTime = now + item.t;
+                osc.frequency.setValueAtTime(item.f, startTime);
+                gain.gain.setValueAtTime(0.12, startTime);
+                gain.gain.exponentialRampToValueAtTime(0.001, startTime + item.d);
+                osc.connect(gain);
+                gain.connect(ctx.destination);
+                osc.start(startTime);
+                osc.stop(startTime + item.d);
+            });
         }
     };
 
@@ -254,7 +445,7 @@ document.addEventListener('DOMContentLoaded', () => {
         currentFocus = 0;
 
         // UI & âm thanh cảnh báo nghiện game
-        playTone(330, 0.4, 'sawtooth');
+        SoundEffects.focusLostAddicted();
         focusBarPanel.classList.add('addicted-state');
         btnPlayAction.classList.add('addicted-locked');
         studentBox.classList.add('addicted-state');
@@ -281,6 +472,11 @@ document.addEventListener('DOMContentLoaded', () => {
                 // Khi không bấm nút chơi game (đang học): Thanh tập trung sẽ tự tụt dần (~7% mỗi giây)
                 currentFocus -= 0.7;
 
+                // Thỉnh thoảng phát tiếng gõ phím lách cách khi đang học
+                if (Math.random() < 0.25) {
+                    SoundEffects.keyboardTyping();
+                }
+
                 if (currentFocus <= 0) {
                     currentFocus = 0;
                     updateFocusDisplay();
@@ -293,6 +489,11 @@ document.addEventListener('DOMContentLoaded', () => {
                 if (currentFocus < MAX_FOCUS) {
                     currentFocus = Math.min(MAX_FOCUS, currentFocus + 1.0);
                     updateFocusDisplay();
+                }
+
+                // Phát tiếng game 8-bit lách cách vui nhộn
+                if (Math.random() < 0.35) {
+                    SoundEffects.gamingBlip();
                 }
             }
         }, 100);
@@ -313,7 +514,7 @@ document.addEventListener('DOMContentLoaded', () => {
         mentorBox.className = 'character-card mentor-section warning-state';
         mentorCaption.textContent = 'Mentor ngước mắt... Sắp kiểm tra!';
         mentorStatusChip.innerHTML = '<span class="dot warning"></span><span id="mentor-status-text">CẢNH BÁO: Mentor chuẩn bị ngẩng đầu!</span>';
-        playTone(440, 0.2, 'triangle');
+        SoundEffects.mentorWarning();
     };
 
     const setMentorWatching = () => {
@@ -322,7 +523,7 @@ document.addEventListener('DOMContentLoaded', () => {
         mentorBox.className = 'character-card mentor-section watching-state';
         mentorCaption.textContent = '👀 MENTOR ĐANG QUAN SÁT LỚP HỌC!';
         mentorStatusChip.innerHTML = '<span class="dot danger"></span><span id="mentor-status-text">NGUY HIỂM: Mentor đang theo dõi!</span>';
-        playTone(660, 0.3, 'sawtooth');
+        SoundEffects.mentorWatching();
     };
 
     const getRandomBetween = (min, max) => Math.floor(Math.random() * (max - min + 1)) + min;
@@ -410,7 +611,7 @@ document.addEventListener('DOMContentLoaded', () => {
         clearTimeout(mentorCycleTimeout);
         if (gameLoopFrame) cancelAnimationFrame(gameLoopFrame);
 
-        playTone(220, 0.6, 'sawtooth');
+        SoundEffects.gameOver();
 
         // Show Game Over Modal
         modalGameOver.classList.remove('hidden');
@@ -423,7 +624,7 @@ document.addEventListener('DOMContentLoaded', () => {
         clearTimeout(mentorCycleTimeout);
         if (gameLoopFrame) cancelAnimationFrame(gameLoopFrame);
 
-        playTone(880, 0.5, 'sine');
+        SoundEffects.victoryFanfare();
 
         // Show Game Win Modal
         modalGameWin.classList.remove('hidden');
@@ -433,6 +634,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const onStartPlaying = (e) => {
         if (e.cancelable) e.preventDefault();
         if (currentGameStatus === GAME_STATUS.RUNNING) {
+            SoundEffects.gamingBlip();
             setStudentPlaying();
         }
     };
