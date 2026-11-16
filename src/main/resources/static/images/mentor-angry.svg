@@ -1,0 +1,41 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 400" width="100%" height="100%">
+  <defs>
+    <radialGradient id="alertBg3" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#991b1b"/>
+      <stop offset="100%" stop-color="#450a0a"/>
+    </radialGradient>
+  </defs>
+
+  <rect width="400" height="400" fill="url(#alertBg3)"/>
+  <polygon points="40,20 80,10 60,70 100,50 50,130" fill="#facc15" opacity="0.6"/>
+  <polygon points="350,20 320,10 340,70 300,50 340,130" fill="#facc15" opacity="0.6"/>
+
+  <!-- Than Mentor dung phat day -->
+  <ellipse cx="200" cy="290" rx="80" ry="60" fill="#b91c1c"/>
+  <rect x="135" y="270" width="130" height="75" fill="#991b1b" rx="10"/>
+
+  <!-- Dau Mentor nhin cham cham -->
+  <circle cx="200" cy="180" r="48" fill="#fbcfe8"/>
+  <path d="M 152 170 Q 200 120 248 170 Q 200 150 152 170 Z" fill="#1e293b"/>
+
+  <!-- Mat do gian du -->
+  <circle cx="182" cy="180" r="14" fill="#ffffff" stroke="#ef4444" stroke-width="4"/>
+  <circle cx="218" cy="180" r="14" fill="#ffffff" stroke="#ef4444" stroke-width="4"/>
+  <circle cx="182" cy="180" r="6" fill="#dc2626"/>
+  <circle cx="218" cy="180" r="6" fill="#dc2626"/>
+
+  <line x1="170" y1="162" x2="194" y2="172" stroke="#1e293b" stroke-width="5" stroke-linecap="round"/>
+  <line x1="230" y1="162" x2="206" y2="172" stroke="#1e293b" stroke-width="5" stroke-linecap="round"/>
+
+  <!-- Mieng quat to -->
+  <ellipse cx="200" cy="208" rx="18" ry="12" fill="#7f1d1d"/>
+  <path d="M 188 202 Q 200 206 212 202" stroke="#ffffff" stroke-width="3" fill="none"/>
+
+  <!-- Ban va Laptop -->
+  <rect x="40" y="320" width="320" height="80" fill="#78350f" rx="6"/>
+  <rect x="35" y="315" width="330" height="15" fill="#92400e" rx="3"/>
+  <polygon points="140,310 260,310 250,250 150,250" fill="#64748b"/>
+
+  <rect x="100" y="30" width="200" height="36" rx="8" fill="#dc2626" stroke="#fff" stroke-width="2"/>
+  <text x="200" y="54" fill="#fff" font-family="sans-serif" font-size="14" font-weight="900" text-anchor="middle">BAT QUA TANG! [!]</text>
+</svg>

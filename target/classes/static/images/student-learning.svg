@@ -1,0 +1,60 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 400" width="100%" height="100%">
+  <defs>
+    <linearGradient id="bgStudLearn4" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#1e1e2f"/>
+      <stop offset="100%" stop-color="#0f172a"/>
+    </linearGradient>
+    <linearGradient id="screenCode4" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#1e1e1e"/>
+      <stop offset="100%" stop-color="#2d3748"/>
+    </linearGradient>
+  </defs>
+
+  <rect width="400" height="400" fill="url(#bgStudLearn4)"/>
+
+  <!-- Cua so lop hoc -->
+  <rect x="20" y="30" width="70" height="120" rx="4" fill="#38bdf8" opacity="0.3" stroke="#64748b" stroke-width="4"/>
+  <line x1="55" y1="30" x2="55" y2="150" stroke="#64748b" stroke-width="3"/>
+  <line x1="20" y1="90" x2="90" y2="90" stroke="#64748b" stroke-width="3"/>
+
+  <!-- Sinh vien ngoi hoc nghiem tuc tren laptop -->
+  <ellipse cx="200" cy="220" rx="65" ry="50" fill="#0284c7"/>
+  <rect x="155" y="210" width="90" height="60" fill="#0369a1" rx="8"/>
+  <text x="200" y="235" fill="#e0f2fe" font-size="10" font-weight="bold" text-anchor="middle">CODEGYM</text>
+
+  <!-- Tay sinh vien tren ban phim laptop -->
+  <ellipse cx="140" cy="275" rx="18" ry="10" fill="#fbcfe8" transform="rotate(-20 140 275)"/>
+  <ellipse cx="260" cy="275" rx="18" ry="10" fill="#fbcfe8" transform="rotate(20 260 275)"/>
+
+  <!-- Dau sinh vien -->
+  <circle cx="200" cy="155" r="36" fill="#fbcfe8"/>
+  <path d="M 165 150 Q 200 115 235 150 Q 220 135 180 135 Z" fill="#334155"/>
+  <ellipse cx="190" cy="160" rx="4" ry="5" fill="#1e293b"/>
+  <ellipse cx="210" cy="160" rx="4" ry="5" fill="#1e293b"/>
+  <line x1="185" y1="152" x2="195" y2="154" stroke="#1e293b" stroke-width="2"/>
+  <line x1="215" y1="152" x2="205" y2="154" stroke="#1e293b" stroke-width="2"/>
+  <path d="M 194 175 Q 200 180 206 175" stroke="#475569" stroke-width="2" fill="none"/>
+
+  <!-- Ban hoc vien -->
+  <rect x="30" y="280" width="340" height="110" fill="#52525b" rx="6"/>
+  <rect x="25" y="275" width="350" height="15" fill="#71717a" rx="3"/>
+
+  <!-- Laptop cua Sinh Vien (Man hinh quay ve nguoi xem) -->
+  <rect x="120" y="195" width="160" height="100" rx="6" fill="#0f172a" stroke="#cbd5e1" stroke-width="4"/>
+  <rect x="126" y="201" width="148" height="88" rx="3" fill="url(#screenCode4)"/>
+  <rect x="126" y="201" width="148" height="14" fill="#3b82f6"/>
+  <text x="132" y="211" fill="#fff" font-family="monospace" font-size="8">Main.java - IntelliJ IDEA</text>
+  <text x="132" y="228" fill="#ec4899" font-family="monospace" font-size="9">import</text>
+  <text x="172" y="228" fill="#f8fafc" font-family="monospace" font-size="9">java.util.*;</text>
+  <text x="132" y="245" fill="#fbbf24" font-family="monospace" font-size="9">void codePractice() {</text>
+  <text x="142" y="260" fill="#4ade80" font-family="monospace" font-size="8">// Hoc cham chi...</text>
+  <text x="132" y="275" fill="#fbbf24" font-family="monospace" font-size="9">}</text>
+
+  <!-- De laptop va Ban phim -->
+  <polygon points="100,310 300,310 280,295 120,295" fill="#94a3b8"/>
+  <rect x="175" y="300" width="50" height="6" rx="2" fill="#475569"/>
+
+  <!-- Sach Java -->
+  <rect x="50" y="295" width="40" height="50" rx="3" fill="#dc2626"/>
+  <text x="70" y="325" fill="#fff" font-size="8" font-weight="bold" text-anchor="middle">JAVA</text>
+</svg>

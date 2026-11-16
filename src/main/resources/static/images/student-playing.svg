@@ -1,0 +1,49 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 400" width="100%" height="100%">
+  <defs>
+    <linearGradient id="bgStudPlay5" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#2e1065"/>
+      <stop offset="100%" stop-color="#0f172a"/>
+    </linearGradient>
+    <linearGradient id="screenGame5" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#ec4899"/>
+      <stop offset="50%" stop-color="#8b5cf6"/>
+      <stop offset="100%" stop-color="#06b6d4"/>
+    </linearGradient>
+  </defs>
+
+  <rect width="400" height="400" fill="url(#bgStudPlay5)"/>
+  <circle cx="200" cy="240" r="130" fill="#a855f7" opacity="0.15"/>
+
+  <!-- Sinh vien cuoi toe toet choi game -->
+  <ellipse cx="200" cy="220" rx="65" ry="50" fill="#7c3aed"/>
+  <rect x="155" y="210" width="90" height="60" fill="#6d28d9" rx="8"/>
+
+  <!-- Tay go ban phim cuc nhanh -->
+  <ellipse cx="135" cy="270" rx="20" ry="12" fill="#fbcfe8" transform="rotate(-30 135 270)"/>
+  <ellipse cx="265" cy="270" rx="20" ry="12" fill="#fbcfe8" transform="rotate(30 265 270)"/>
+
+  <!-- Dau sinh vien cuoi hon ho -->
+  <circle cx="200" cy="155" r="36" fill="#fbcfe8"/>
+  <path d="M 165 150 Q 200 115 235 150 Q 220 135 180 135 Z" fill="#334155"/>
+  <path d="M 183 158 Q 190 152 197 158" stroke="#1e293b" stroke-width="3" fill="none"/>
+  <path d="M 203 158 Q 210 152 217 158" stroke="#1e293b" stroke-width="3" fill="none"/>
+  <path d="M 190 170 Q 200 186 210 170 Z" fill="#dc2626"/>
+
+  <!-- Ban hoc -->
+  <rect x="30" y="280" width="340" height="110" fill="#52525b" rx="6"/>
+  <rect x="25" y="275" width="350" height="15" fill="#71717a" rx="3"/>
+
+  <!-- Laptop dang choi game 8-bit -->
+  <rect x="120" y="195" width="160" height="100" rx="6" fill="#0f172a" stroke="#a855f7" stroke-width="4"/>
+  <rect x="126" y="201" width="148" height="88" rx="3" fill="url(#screenGame5)"/>
+  <rect x="185" y="230" width="30" height="30" fill="#facc15" rx="4"/>
+  <text x="200" y="250" fill="#000" font-size="16" text-anchor="middle">X</text>
+  <text x="135" y="220" fill="#fff" font-family="monospace" font-size="10" font-weight="bold">SCORE: 99999</text>
+  <text x="200" y="278" fill="#fff" font-family="monospace" font-size="9" text-anchor="middle">LEO RANK GAME</text>
+
+  <polygon points="100,310 300,310 280,295 120,295" fill="#94a3b8"/>
+  <rect x="175" y="300" width="50" height="6" rx="2" fill="#475569"/>
+
+  <rect x="110" y="25" width="180" height="28" rx="14" fill="#a855f7"/>
+  <text x="200" y="44" fill="#fff" font-family="sans-serif" font-size="12" font-weight="bold" text-anchor="middle">DANG LEN CHOI GAME!</text>
+</svg>

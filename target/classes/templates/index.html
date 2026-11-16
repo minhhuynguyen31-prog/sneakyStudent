@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title th:text="${gameTitle}">Sinh Viên Lén Lút - Sneaky Student</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}" href="/css/style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Be+Vietnam+Pro:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+</head>
+<body>
+
+    <!-- ======================================================
+         MÀN HÌNH BẮT ĐẦU (START SCREEN)
+    ====================================================== -->
+    <div id="screen-start" class="start-screen">
+        <!-- Nền bảng đen phía sau -->
+        <div class="ss-blackboard">
+            <div class="ss-chalk-line"></div>
+            <div class="ss-chalk-line"></div>
+            <div class="ss-chalk-line"></div>
+        </div>
+
+        <!-- Thẻ chính giữa -->
+        <div class="ss-card animate-pop">
+
+            <!-- Logo / Tiêu đề -->
+            <div class="ss-logo-row">
+                <span class="ss-emoji">🎮</span>
+                <span class="ss-emoji">📚</span>
+                <span class="ss-emoji">🕵️</span>
+            </div>
+
+            <div class="ss-school-tag">🏫 CodeGym Classroom — Giờ thực hành Java</div>
+
+            <h1 class="ss-title">
+                <span class="ss-title-line1">SINH VIÊN</span>
+                <span class="ss-title-line2">LÉN LÚT</span>
+                <span class="ss-title-en">SNEAKY STUDENT</span>
+            </h1>
+
+            <!-- Mô tả luật chơi ngắn -->
+            <div class="ss-rules">
+                <div class="ss-rule-item">
+                    <span class="ss-rule-icon">🖱️</span>
+                    <span><strong>Nhấn &amp; GIỮ</strong> nút để lén chơi game</span>
+                </div>
+                <div class="ss-rule-item">
+                    <span class="ss-rule-icon">👀</span>
+                    <span><strong>THẢ TAY</strong> ngay khi Mentor sắp ngẩng đầu</span>
+                </div>
+                <div class="ss-rule-item">
+                    <span class="ss-rule-icon">🧠</span>
+                    <span><strong>Thanh tập trung:</strong> Không bấm chơi game thì độ tập trung sẽ tụt dần. Về 0% là bị nghiện vĩnh viễn không thể học lại!</span>
+                </div>
+                <div class="ss-rule-item">
+                    <span class="ss-rule-icon">⏱️</span>
+                    <span>Sống sót qua <strong>3 phút</strong> để chiến thắng!</span>
+                </div>
+                <div class="ss-rule-item">
+                    <span class="ss-rule-icon">🚨</span>
+                    <span>Bị bắt → <strong>GAME OVER</strong> ngay lập tức</span>
+                </div>
+            </div>
+
+            <!-- Nút bắt đầu chính -->
+            <button id="btn-start-game" class="ss-btn-start">
+                <span class="ss-btn-icon">▶</span>
+                <span class="ss-btn-text">BẮT ĐẦU CHƠI!</span>
+            </button>
+
+            <!-- Phím tắt gợi ý -->
+            <div class="ss-hint">Hoặc nhấn phím <kbd>ENTER</kbd> để bắt đầu</div>
+
+            <!-- Footer card -->
+            <div class="ss-footer-brand">
+                <span>⚡ Powered by</span>
+                <span class="ss-cg-badge">CodeGym</span>
+                <span>Spring Boot &amp; Thymeleaf</span>
+            </div>
+        </div>
+    </div>
+    <!-- END START SCREEN -->
+
+    <!-- 1. Thanh thời gian 3 phút (Timer Bar) dính sát mép trên -->
+    <div id="timer-bar-container" class="hidden-until-start">
+        <div id="timer-bar-fill"></div>
+    </div>
+
+    <!-- Đồng hồ đếm ngược - giống đồng hồ treo tường trong lớp -->
+    <div id="timer-badge" class="hidden-until-start">
+        <span class="timer-icon">⏱️</span>
+        <span id="timer-text">03:00</span>
+    </div>
+
+    <!-- Header / HUD thông tin -->
+    <header class="game-hud hidden-until-start">
+        <div class="hud-brand">
+            <span class="hud-tag">🏫 CodeGym Classroom</span>
+            <h1 class="hud-title">🕹️ SINH VIÊN LÉN LÚT</h1>
+        </div>
+        <div class="hud-status">
+            <div class="status-chip" id="mentor-status-chip">
+                <span class="dot safe"></span>
+                <span id="mentor-status-text">Mentor: Đang cắm cúi code (An toàn)</span>
+            </div>
+            <div class="status-chip" id="student-status-chip">
+                <span id="student-status-text">Bạn: Đang chăm chỉ học 💻</span>
+            </div>
+        </div>
+    </header>
+
+    <!-- Khu vực sàn diễn Game (Lớp học CodeGym) -->
+    <main class="classroom-stage hidden-until-start">
+
+        <!-- Khu vực Mentor (Bục giảng phía trước) -->
+        <section class="character-card mentor-section" id="mentor-box">
+            <div class="role-badge mentor-badge">👨‍🏫 MENTOR</div>
+
+            <!-- Dấu hiệu cảnh báo khi Mentor chuẩn bị ngước nhìn -->
+            <div class="alert-exclamation" id="alert-bubble">⚠️ !?</div>
+
+            <div class="avatar-wrapper">
+                <img id="mentor-img" th:src="@{/images/mentor-safe.svg}" src="/images/mentor-safe.svg" alt="Mentor CodeGym" draggable="false">
+            </div>
+
+            <!-- Bàn / Bục giảng -->
+            <div class="desk-graphic"></div>
+
+            <div class="character-label" id="mentor-caption">Mentor đang mải fix bug...</div>
+        </section>
+
+        <!-- Khu vực Học Viên (Bàn học sinh) -->
+        <section class="character-card student-section" id="student-box">
+            <div class="role-badge student-badge">🎓 BẠN (HỌC VIÊN)</div>
+
+            <div class="avatar-wrapper">
+                <img id="student-img" th:src="@{/images/student-learning.svg}" src="/images/student-learning.svg" alt="Học viên CodeGym" draggable="false">
+            </div>
+
+            <!-- Bàn học sinh -->
+            <div class="desk-graphic"></div>
+
+            <div class="character-label" id="student-caption">Tập trung nhìn màn hình code...</div>
+        </section>
+    </main>
+
+    <!-- THANH TẬP TRUNG (FOCUS BAR) - Giữa Stage và Controls -->
+    <div id="focus-bar-panel" class="focus-bar-panel hidden-until-start">
+        <div class="focus-bar-header">
+            <span class="focus-bar-icon">🧠</span>
+            <span>Độ tập trung học bài</span>
+            <span id="focus-bar-pct" class="focus-bar-pct">100%</span>
+        </div>
+        <div class="focus-bar-track">
+            <div id="focus-bar-fill" class="focus-bar-fill"></div>
+            <span class="focus-bar-hint" id="focus-status-text">Đang chăm chú học tốt!</span>
+        </div>
+        <div id="focus-addict-warning" class="focus-addict-warning hidden">
+            😵 <strong>Bạn bị cuốn vào game rồi!</strong> Không thể tập trung học lại được nữa!
+        </div>
+    </div>
+
+    <!-- Khu vực nút điều khiển (Footer - sàn lớp học) -->
+    <footer class="game-controls hidden-until-start">
+        <div class="control-guide">
+            💡 <strong>Cách chơi:</strong> Nhấn và <strong>GIỮ</strong> nút để lén chơi game! <strong>THẢ</strong> tay ngay khi thấy Mentor sắp ngước nhìn!
+        </div>
+
+        <button id="btn-play-action" type="button" class="action-btn">
+            <span class="btn-icon">🎮</span>
+            <span class="btn-main-text">GIỮ ĐỂ CHƠI GAME!</span>
+            <span class="btn-sub-text">(Thả ra lập tức học bài)</span>
+        </button>
+    </footer>
+
+    <!-- POPUP THẤT BẠI (GAME OVER) -->
+    <div id="modal-game-over" class="modal-overlay hidden">
+        <div class="modal-card fail-card animate-pop">
+            <div class="modal-header fail-header">
+                <h2>🚨 BẮT QUẢ TANG RỒI! 🚨</h2>
+            </div>
+
+            <div class="modal-body fail-body">
+                <div class="caught-mentor-container">
+                    <div class="speech-bubble">
+                        <span>"Học bài đi!"</span>
+                    </div>
+                    <img th:src="@{/images/mentor-angry.svg}" src="/images/mentor-angry.svg" alt="Mentor Angry" class="modal-avatar mentor-angry-avatar">
+                </div>
+
+                <div class="caught-student-container">
+                    <img th:src="@{/images/student-cry.svg}" src="/images/student-cry.svg" alt="Student Crying" class="modal-avatar student-cry-avatar">
+                    <p class="fail-message">Bạn đã bị Mentor ghi vào sổ đầu bài! 😭</p>
+                </div>
+            </div>
+
+            <div class="modal-footer">
+                <button id="btn-retry-lose" class="btn-replay">🔄 Chơi lại</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- POPUP CHIẾN THẮNG (WIN) -->
+    <div id="modal-game-win" class="modal-overlay hidden">
+        <div class="modal-card win-card animate-pop">
+            <div class="modal-header win-header">
+                <h2>🎉 ĐẲNG CẤP THẦN SẦU! 🎉</h2>
+            </div>
+
+            <div class="modal-body win-body">
+                <img th:src="@{/images/student-win.svg}" src="/images/student-win.svg" alt="Student Winner" class="modal-avatar student-win-avatar bounce-effect">
+                <p class="win-title-text">Chúc mừng! Bạn đã qua mắt thành công!</p>
+                <p class="win-sub-text">Bạn đã sống sót qua trọn vẹn 3 phút thực hành mà Mentor không hề hay biết!</p>
+            </div>
+
+            <div class="modal-footer">
+                <button id="btn-retry-win" class="btn-replay win-btn">🏆 Chơi lại ván mới</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Cấu hình truyền từ Controller -->
+    <script th:inline="javascript">
+        /*<![CDATA[*/
+        const GAME_CONFIG = {
+            totalSeconds: /*[[${targetTimeSeconds}]]*/ 180,
+            baseSafeMinMs: 2500,
+            baseSafeMaxMs: 5000,
+            warningMinMs: 600,
+            warningMaxMs: 1000,
+            watchingMinMs: 1500,
+            watchingMaxMs: 3000
+        };
+        /*]]>*/
+    </script>
+    <script th:src="@{/js/game.js}" src="/js/game.js"></script>
+</body>
+</html>

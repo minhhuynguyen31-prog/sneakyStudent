@@ -1,0 +1,1292 @@
+/* ==========================================================================
+   SINH VIÊN LÉN LÚT (SNEAKY STUDENT) - MAIN STYLESHEET
+   Classroom Scene Edition
+   ========================================================================== */
+
+:root {
+    --wall-color: #f5e6c8;
+    --wall-dark: #e8d5a8;
+    --floor-color: #8b5e3c;
+    --floor-light: #a0714f;
+    --board-color: #2d5a1b;
+    --board-dark: #1e3d12;
+    --wood-desk: #c8862a;
+    --wood-desk-dark: #a0691e;
+    --primary-color: #f59e0b;
+    --danger-color: #ef4444;
+    --danger-dark: #b91c1c;
+    --success-color: #10b981;
+    --warning-color: #f59e0b;
+    --text-dark: #1e293b;
+    --text-white: #f8fafc;
+    --text-muted: #64748b;
+    --border-color: #475569;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    user-select: none;
+    -webkit-user-select: none;
+    -webkit-touch-callout: none;
+}
+
+/* ==========================================================================
+   NỀN PHÒNG HỌC THỰC THỤ (CLASSROOM BACKGROUND SCENE)
+   ========================================================================== */
+body {
+    font-family: 'Be Vietnam Pro', sans-serif;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    overflow-x: hidden;
+    position: relative;
+
+    /* Tường lớp học - vàng nhạt ấm áp */
+    background-color: var(--wall-color);
+
+    /* Sàn gỗ chiếm 1/3 dưới */
+    background-image:
+        /* Viền chân tường / Baseboard */
+        linear-gradient(to bottom,
+            transparent 0%,
+            transparent 65%,
+            #6b4a2a 65%,
+            #6b4a2a 67%,
+            var(--floor-color) 67%,
+            var(--floor-light) 100%
+        ),
+        /* Vân gỗ nền sàn */
+        repeating-linear-gradient(
+            90deg,
+            transparent 0px,
+            transparent 60px,
+            rgba(0,0,0,0.04) 60px,
+            rgba(0,0,0,0.04) 61px
+        ),
+        /* Ánh sáng tường nhẹ */
+        radial-gradient(ellipse at 20% 30%, rgba(255,240,180,0.6) 0%, transparent 50%),
+        radial-gradient(ellipse at 80% 20%, rgba(255,230,160,0.4) 0%, transparent 45%);
+    background-size: 100% 100%, 61px 100%, 100% 100%, 100% 100%;
+    background-attachment: fixed;
+}
+
+/* Giả lập trần nhà & đèn điện nhỏ */
+body::before {
+    content: '';
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    height: 18px;
+    background: #d4c5a0;
+    border-bottom: 3px solid #b8a880;
+    z-index: 1;
+    pointer-events: none;
+}
+
+/* Bảng đen CodeGym sát tường trên - giả lập bằng pseudo element toàn chiều rộng */
+body::after {
+    content: 'CODEGYM CLASSROOM  ✦  MODULE 3: Spring Boot & Thymeleaf  ✦  Hôm nay: Thực hành Spring MVC';
+    position: fixed;
+    top: 18px;
+    left: 0; right: 0;
+    height: 70px;
+    background: linear-gradient(135deg, #2d5a1b 0%, #1e3d12 50%, #2d5a1b 100%);
+    border-bottom: 6px solid #8b5e3c;
+    color: rgba(255, 255, 255, 0.85);
+    font-family: 'Be Vietnam Pro', sans-serif;
+    font-size: 0.8rem;
+    font-weight: 700;
+    letter-spacing: 1.5px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0 24px;
+    z-index: 2;
+    pointer-events: none;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.3), inset 0 1px 0 rgba(255,255,255,0.1);
+    text-shadow: 1px 1px 2px rgba(0,0,0,0.5);
+}
+
+/* ==========================================================================
+   1. THANH THỜI GIAN (TIMER PROGRESS BAR) - DÍNH SÁT MÉP TRÊN
+   ========================================================================== */
+#timer-bar-container {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 18px;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 9999;
+}
+
+#timer-bar-fill {
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, #10b981, #3b82f6);
+    transition: width 0.1s linear, background-color 0.3s ease;
+    box-shadow: 0 0 10px rgba(16, 185, 129, 0.8);
+}
+
+/* Biển đếm giờ - thiết kế như đồng hồ trên tường lớp học */
+#timer-badge {
+    position: fixed;
+    top: 90px;
+    right: 20px;
+    background: #fff9e6;
+    border: 3px solid #8b5e3c;
+    padding: 6px 16px;
+    border-radius: 8px;
+    font-size: 1.1rem;
+    font-weight: 800;
+    font-family: 'Press Start 2P', monospace;
+    letter-spacing: 1px;
+    color: #1e293b;
+    box-shadow: 3px 3px 0 #8b5e3c, 0 6px 15px rgba(0,0,0,0.25);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    z-index: 1000;
+}
+
+/* ==========================================================================
+   2. HUD / HEADER - THANH THÔNG TIN PHÍA TRÊN
+   ========================================================================== */
+.game-hud {
+    margin-top: 95px; /* dưới bảng đen cố định */
+    padding: 8px 20px;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    align-items: center;
+    gap: 10px;
+    position: relative;
+    z-index: 10;
+}
+
+.hud-brand {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.hud-tag {
+    font-size: 0.7rem;
+    text-transform: uppercase;
+    font-weight: 700;
+    letter-spacing: 1.5px;
+    color: #7c5c20;
+    background: rgba(139, 94, 60, 0.15);
+    padding: 2px 8px;
+    border-radius: 4px;
+    border: 1px solid rgba(139, 94, 60, 0.3);
+}
+
+.hud-title {
+    font-size: 1.4rem;
+    font-weight: 900;
+    color: #1e293b;
+    text-shadow: 1px 1px 0 rgba(255,255,255,0.5);
+}
+
+.hud-status {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+.status-chip {
+    background: rgba(255, 255, 255, 0.85);
+    border: 2px solid #c8862a;
+    padding: 5px 14px;
+    border-radius: 20px;
+    font-size: 0.82rem;
+    font-weight: 700;
+    color: #1e293b;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    box-shadow: 2px 2px 0 rgba(139, 94, 60, 0.3);
+}
+
+.dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    display: inline-block;
+}
+
+.dot.safe {
+    background: var(--success-color);
+    box-shadow: 0 0 8px var(--success-color);
+}
+
+.dot.warning {
+    background: var(--warning-color);
+    box-shadow: 0 0 10px var(--warning-color);
+    animation: blink 0.4s infinite alternate;
+}
+
+.dot.danger {
+    background: var(--danger-color);
+    box-shadow: 0 0 12px var(--danger-color);
+    animation: blink 0.2s infinite alternate;
+}
+
+/* ==========================================================================
+   3. CLASSROOM STAGE - SÀN DIỄN LỚP HỌC
+   ========================================================================== */
+.classroom-stage {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    align-items: flex-end;  /* Nhân vật đứng trên nền, giống đang ngồi trong lớp */
+    gap: 50px;
+    padding: 10px 30px 0 30px;
+    position: relative;
+    max-width: 1100px;
+    margin: 0 auto;
+    width: 100%;
+    z-index: 10;
+}
+
+/* Cửa sổ bên trái - ánh sáng tự nhiên */
+.classroom-stage::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 20px;
+    width: 90px;
+    height: 160px;
+    background: linear-gradient(135deg, #bae6fd 0%, #e0f2fe 40%, #fef9c3 100%);
+    border: 5px solid #8b5e3c;
+    border-radius: 4px 4px 0 0;
+    box-shadow: inset 0 0 15px rgba(186, 230, 253, 0.6), 3px 3px 0 rgba(0,0,0,0.2);
+    z-index: 1;
+}
+
+/* Thanh chia cửa sổ */
+.classroom-stage::after {
+    content: '';
+    position: absolute;
+    top: 0; left: 62px;
+    width: 6px;
+    height: 160px;
+    background: #8b5e3c;
+    z-index: 2;
+}
+
+/* ==========================================================================
+   THẺ NHÂN VẬT TRONG LỚP HỌC - Bục giảng Mentor / Bàn học Sinh viên
+   ========================================================================== */
+.character-card {
+    position: relative;
+    text-align: center;
+    flex: 1;
+    max-width: 400px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+/* Mentor Card - Bục giảng có màu gỗ đậm hơn */
+.mentor-section {
+    /* không có background card, hòa vào lớp học */
+}
+
+/* Student Card */
+.student-section {
+}
+
+/* Nhãn vai trò */
+.role-badge {
+    padding: 4px 18px;
+    border-radius: 6px;
+    font-size: 0.72rem;
+    font-weight: 900;
+    letter-spacing: 1px;
+    margin-bottom: 6px;
+    box-shadow: 2px 2px 0 rgba(0,0,0,0.2);
+}
+
+.mentor-badge {
+    background: #1d4ed8;
+    color: white;
+}
+
+.student-badge {
+    background: #059669;
+    color: white;
+}
+
+/* Khung ảnh nhân vật - giống khung vẽ trong lớp học */
+.avatar-wrapper {
+    width: 230px;
+    height: 230px;
+    margin: 6px auto;
+    border-radius: 8px;
+    overflow: hidden;
+    background: transparent;
+    border: 4px solid #8b5e3c;
+    box-shadow: 4px 4px 0 rgba(0,0,0,0.3), inset 0 1px 0 rgba(255,255,255,0.3);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+}
+
+.avatar-wrapper img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.15s ease;
+}
+
+/* Nhãn chú thích nhân vật - giống nhãn tên trên bàn */
+.character-label {
+    background: rgba(255, 255, 255, 0.9);
+    border: 2px solid #c8862a;
+    border-radius: 4px;
+    padding: 4px 12px;
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: #1e293b;
+    min-height: 28px;
+    box-shadow: 2px 2px 0 rgba(139, 94, 60, 0.3);
+    max-width: 240px;
+}
+
+/* Dấu chấm than cảnh báo */
+.alert-exclamation {
+    position: absolute;
+    top: -18px;
+    right: -18px;
+    font-size: 1.5rem;
+    background: #ef4444;
+    color: #fff;
+    padding: 4px 10px;
+    border-radius: 50px;
+    font-weight: 900;
+    opacity: 0;
+    transform: scale(0.5) rotate(-10deg);
+    transition: all 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    box-shadow: 0 0 15px rgba(239, 68, 68, 0.9), 2px 2px 0 rgba(0,0,0,0.3);
+    pointer-events: none;
+    z-index: 20;
+}
+
+/* === TRẠNG THÁI CẢNH BÁO - Viền bàn rung rinh === */
+.character-card.warning-state .avatar-wrapper {
+    border-color: #f59e0b;
+    box-shadow: 4px 4px 0 rgba(0,0,0,0.3), 0 0 20px rgba(245, 158, 11, 0.8);
+    animation: shake 0.25s infinite;
+}
+
+.character-card.warning-state .alert-exclamation {
+    opacity: 1;
+    transform: scale(1.1) rotate(5deg);
+}
+
+/* === TRẠNG THÁI NGUY HIỂM === */
+.character-card.watching-state .avatar-wrapper {
+    border-color: #ef4444;
+    box-shadow: 4px 4px 0 rgba(0,0,0,0.3), 0 0 30px rgba(239, 68, 68, 0.9);
+    animation: danger-pulse 0.5s infinite alternate;
+}
+
+/* === TRẠNG THÁI ĐANG CHƠI GAME === */
+.student-section.playing-state .avatar-wrapper {
+    border-color: #8b5cf6;
+    box-shadow: 4px 4px 0 rgba(0,0,0,0.3), 0 0 25px rgba(139, 92, 246, 0.8);
+}
+
+/* BỤC GIẢNG - Hình ảnh giả lập bục giảng mentor */
+.mentor-section .desk-graphic {
+    width: 100%;
+    max-width: 280px;
+    height: 30px;
+    background: linear-gradient(to bottom, var(--wood-desk), var(--wood-desk-dark));
+    border-radius: 4px 4px 0 0;
+    border: 3px solid #8b4513;
+    border-bottom: none;
+    box-shadow: 3px 0 0 #8b4513, -3px 0 0 #8b4513;
+    position: relative;
+}
+
+/* Mặt bục giảng */
+.mentor-section .desk-graphic::before {
+    content: 'GIẢNG VIÊN';
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 0.6rem;
+    font-weight: 900;
+    color: rgba(255,255,255,0.7);
+    letter-spacing: 2px;
+}
+
+/* BÀN HỌC SINH */
+.student-section .desk-graphic {
+    width: 100%;
+    max-width: 280px;
+    height: 22px;
+    background: linear-gradient(to bottom, #d4a05a, #b8864a);
+    border-radius: 4px 4px 0 0;
+    border: 3px solid #8b5e3c;
+    border-bottom: none;
+    box-shadow: 3px 0 0 #6b4423, -3px 0 0 #6b4423;
+}
+
+/* SÀN GỖ - đường kẻ sàn ở footer */
+.game-controls {
+    text-align: center;
+    padding: 12px 20px 20px 20px;
+    position: relative;
+    z-index: 10;
+    /* Màu sàn gỗ */
+    background: linear-gradient(to bottom,
+        var(--floor-color) 0%,
+        var(--floor-light) 100%
+    );
+    border-top: 4px solid #6b4a2a;
+    /* Vân gỗ ngang */
+    background-image:
+        repeating-linear-gradient(
+            90deg,
+            transparent 0px,
+            transparent 80px,
+            rgba(0,0,0,0.05) 80px,
+            rgba(0,0,0,0.05) 82px
+        ),
+        linear-gradient(to bottom, var(--floor-color) 0%, var(--floor-light) 100%);
+}
+
+.control-guide {
+    font-size: 0.88rem;
+    color: rgba(255,255,255,0.9);
+    margin-bottom: 10px;
+    text-shadow: 1px 1px 2px rgba(0,0,0,0.4);
+}
+
+.control-guide strong {
+    color: #fde68a;
+}
+
+/* Nút to ở sàn lớp học */
+.action-btn {
+    background: linear-gradient(135deg, #7c3aed, #4f46e5);
+    color: white;
+    border: none;
+    outline: none;
+    padding: 16px 42px;
+    border-radius: 10px;
+    font-size: 1.15rem;
+    font-weight: 900;
+    cursor: pointer;
+    box-shadow:
+        0 6px 0 #3730a3,
+        0 8px 20px rgba(79, 70, 229, 0.5),
+        inset 0 2px 2px rgba(255, 255, 255, 0.3);
+    transition: all 0.1s ease;
+    display: inline-flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 3px;
+    touch-action: none;
+    letter-spacing: 0.5px;
+}
+
+.action-btn .btn-icon {
+    font-size: 1.7rem;
+}
+
+.action-btn .btn-sub-text {
+    font-size: 0.72rem;
+    opacity: 0.9;
+    font-weight: 600;
+}
+
+.action-btn:hover {
+    filter: brightness(1.1);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 0 #3730a3, 0 12px 25px rgba(79, 70, 229, 0.6), inset 0 2px 2px rgba(255, 255, 255, 0.3);
+}
+
+/* Hiệu ứng ấn xuống khi đang giữ nút */
+.action-btn.active-holding {
+    transform: translateY(4px);
+    background: linear-gradient(135deg, #be185d, #e11d48);
+    box-shadow:
+        0 2px 0 #9f1239,
+        0 4px 10px rgba(225, 29, 72, 0.6),
+        inset 0 3px 5px rgba(0, 0, 0, 0.3);
+}
+
+/* ==========================================================================
+   5. POPUP THẮNG / THUA
+   ========================================================================== */
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(0, 0, 0, 0.75);
+    backdrop-filter: blur(4px);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 10000;
+    padding: 20px;
+}
+
+.modal-overlay.hidden {
+    display: none;
+}
+
+.modal-card {
+    background: #fff9f0;
+    border-radius: 16px;
+    width: 100%;
+    max-width: 540px;
+    text-align: center;
+    overflow: hidden;
+    border: 4px solid #8b5e3c;
+    box-shadow: 6px 6px 0 #5a3a1a, 0 25px 50px rgba(0, 0, 0, 0.6);
+}
+
+.modal-header {
+    padding: 16px;
+    font-size: 1.1rem;
+    font-weight: 900;
+    letter-spacing: 0.5px;
+}
+
+.fail-card {
+    border-color: #ef4444;
+    box-shadow: 6px 6px 0 #991b1b, 0 25px 50px rgba(0, 0, 0, 0.6);
+}
+
+.fail-header {
+    background: linear-gradient(135deg, #dc2626, #991b1b);
+    color: white;
+}
+
+.win-card {
+    border-color: #059669;
+    box-shadow: 6px 6px 0 #065f46, 0 25px 50px rgba(0, 0, 0, 0.6);
+}
+
+.win-header {
+    background: linear-gradient(135deg, #10b981, #059669);
+    color: white;
+}
+
+.modal-body {
+    padding: 22px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 14px;
+    background: #fff9f0;
+}
+
+/* Khung thoại Mentor "Học bài đi!" */
+.caught-mentor-container {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.speech-bubble {
+    position: relative;
+    background: #ffffff;
+    color: #1e293b;
+    padding: 10px 24px;
+    border-radius: 20px;
+    border: 3px solid #ef4444;
+    font-weight: 900;
+    font-size: 1.3rem;
+    box-shadow: 3px 3px 0 #ef4444;
+    margin-bottom: 14px;
+    animation: popBounce 0.5s ease;
+}
+
+.speech-bubble::after {
+    content: '';
+    position: absolute;
+    bottom: -14px;
+    left: 50%;
+    transform: translateX(-50%);
+    border-width: 12px 12px 0;
+    border-style: solid;
+    border-color: #ef4444 transparent;
+    display: block;
+    width: 0;
+}
+
+.speech-bubble::before {
+    content: '';
+    position: absolute;
+    bottom: -10px;
+    left: 50%;
+    transform: translateX(-50%);
+    border-width: 10px 10px 0;
+    border-style: solid;
+    border-color: #ffffff transparent;
+    display: block;
+    width: 0;
+    z-index: 1;
+}
+
+.modal-avatar {
+    width: 140px;
+    height: 140px;
+    border-radius: 10px;
+    border: 4px solid #8b5e3c;
+    object-fit: cover;
+    box-shadow: 3px 3px 0 rgba(0,0,0,0.3);
+}
+
+.caught-student-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+}
+
+.fail-message {
+    color: #dc2626;
+    font-weight: 700;
+    font-size: 0.95rem;
+}
+
+.win-title-text {
+    font-size: 1.25rem;
+    font-weight: 900;
+    color: #065f46;
+}
+
+.win-sub-text {
+    font-size: 0.9rem;
+    color: #374151;
+}
+
+.modal-footer {
+    padding: 18px;
+    background: rgba(139, 94, 60, 0.08);
+    border-top: 2px solid rgba(139, 94, 60, 0.2);
+}
+
+.btn-replay {
+    background: linear-gradient(135deg, #ef4444, #dc2626);
+    color: white;
+    border: none;
+    padding: 13px 36px;
+    font-size: 1.1rem;
+    font-weight: 900;
+    border-radius: 8px;
+    cursor: pointer;
+    box-shadow: 0 4px 0 #991b1b, 0 8px 15px rgba(239, 68, 68, 0.3);
+    transition: all 0.1s ease;
+    letter-spacing: 0.5px;
+}
+
+.btn-replay.win-btn {
+    background: linear-gradient(135deg, #10b981, #059669);
+    box-shadow: 0 4px 0 #065f46, 0 8px 15px rgba(16, 185, 129, 0.3);
+}
+
+.btn-replay:hover {
+    filter: brightness(1.1);
+    transform: translateY(-2px);
+}
+
+.btn-replay:active {
+    transform: translateY(2px);
+    box-shadow: 0 2px 0 #991b1b;
+}
+
+.animate-pop {
+    animation: popBounce 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+/* ==========================================================================
+   6. ANIMATIONS
+   ========================================================================== */
+@keyframes shake {
+    0%, 100% { transform: translateX(0); }
+    25% { transform: translateX(-5px) rotate(-0.5deg); }
+    75% { transform: translateX(5px) rotate(0.5deg); }
+}
+
+@keyframes danger-pulse {
+    0% { box-shadow: 4px 4px 0 rgba(0,0,0,0.3), 0 0 15px rgba(239, 68, 68, 0.6); }
+    100% { box-shadow: 4px 4px 0 rgba(0,0,0,0.3), 0 0 35px rgba(239, 68, 68, 1); }
+}
+
+@keyframes blink {
+    0% { opacity: 0.3; }
+    100% { opacity: 1; }
+}
+
+@keyframes popBounce {
+    0% { transform: scale(0.6); opacity: 0; }
+    70% { transform: scale(1.08); }
+    100% { transform: scale(1); opacity: 1; }
+}
+
+.bounce-effect {
+    animation: bounce 0.9s infinite alternate ease-in-out;
+}
+
+@keyframes bounce {
+    0% { transform: translateY(0); }
+    100% { transform: translateY(-14px); }
+}
+
+/* ==========================================================================
+   7. RESPONSIVE
+   ========================================================================== */
+@media (max-width: 768px) {
+    body::after {
+        font-size: 0.65rem;
+        letter-spacing: 0.5px;
+    }
+
+    .classroom-stage {
+        flex-direction: column;
+        align-items: center;
+        gap: 16px;
+        padding: 10px 15px 0 15px;
+    }
+
+    .avatar-wrapper {
+        width: 150px;
+        height: 150px;
+    }
+
+    .character-card {
+        max-width: 100%;
+    }
+
+    .hud-title {
+        font-size: 1.1rem;
+    }
+
+    .action-btn {
+        width: 100%;
+        max-width: 360px;
+        padding: 14px;
+    }
+
+    #timer-badge {
+        top: 94px;
+        right: 10px;
+        font-size: 0.85rem;
+        padding: 5px 12px;
+    }
+}
+
+/* ==========================================================================
+   8. MÀN HÌNH BẮT ĐẦU (START SCREEN)
+   ========================================================================== */
+
+/* Ẩn toàn bộ UI game cho đến khi nhấn Bắt Đầu */
+.hidden-until-start {
+    display: none !important;
+}
+
+/* Overlay full màn hình của Start Screen */
+.start-screen {
+    position: fixed;
+    inset: 0;
+    z-index: 20000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    overflow: hidden;
+
+    /* Nền lớp học hoàng hôn - bảng đen + tường vàng */
+    background:
+        /* Ánh sáng vàng từ cửa sổ trái */
+        radial-gradient(ellipse at 10% 60%, rgba(255, 230, 100, 0.35) 0%, transparent 45%),
+        /* Gradient bảng đen chiếm 40% trên + tường 60% dưới */
+        linear-gradient(
+            to bottom,
+            #1a2e10 0%,
+            #2d5a1b 38%,
+            #6b4a2a 39%,
+            #c8a46a 40%,
+            #f5e6c8 55%,
+            #e8d5a8 100%
+        );
+}
+
+/* Các dòng chữ phấn trắng trên bảng (decoration) */
+.ss-blackboard {
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 39%;
+    pointer-events: none;
+    overflow: hidden;
+}
+
+.ss-chalk-line {
+    height: 1.5px;
+    background: rgba(255,255,255,0.08);
+    margin: 22px 60px;
+    border-radius: 2px;
+}
+
+.ss-chalk-line:nth-child(1) { margin-top: 40px; width: 60%; }
+.ss-chalk-line:nth-child(2) { width: 45%; margin-left: 90px; }
+.ss-chalk-line:nth-child(3) { width: 55%; }
+
+/* Thẻ trung tâm nổi */
+.ss-card {
+    background: rgba(255, 252, 240, 0.97);
+    border: 5px solid #8b5e3c;
+    border-radius: 20px;
+    padding: 32px 36px 28px;
+    max-width: 540px;
+    width: 100%;
+    text-align: center;
+    box-shadow:
+        8px 8px 0 #5a3a1a,
+        0 30px 60px rgba(0, 0, 0, 0.5),
+        inset 0 1px 0 rgba(255,255,255,0.8);
+    position: relative;
+    z-index: 1;
+}
+
+/* Dòng emoji phía trên */
+.ss-logo-row {
+    font-size: 2.4rem;
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    margin-bottom: 10px;
+    animation: float-emoji 2s ease-in-out infinite alternate;
+}
+
+@keyframes float-emoji {
+    0% { transform: translateY(0px); }
+    100% { transform: translateY(-6px); }
+}
+
+/* Nhãn trường/lớp */
+.ss-school-tag {
+    display: inline-block;
+    background: #1d4ed8;
+    color: white;
+    font-size: 0.72rem;
+    font-weight: 800;
+    letter-spacing: 1px;
+    padding: 4px 14px;
+    border-radius: 20px;
+    margin-bottom: 16px;
+    box-shadow: 2px 2px 0 #1e3a8a;
+}
+
+/* Tiêu đề game lớn */
+.ss-title {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 2px;
+    margin-bottom: 22px;
+    line-height: 1.1;
+}
+
+.ss-title-line1 {
+    font-family: 'Press Start 2P', monospace;
+    font-size: 1.9rem;
+    color: #1e293b;
+    text-shadow: 3px 3px 0 rgba(0,0,0,0.15);
+    letter-spacing: 1px;
+}
+
+.ss-title-line2 {
+    font-family: 'Press Start 2P', monospace;
+    font-size: 1.9rem;
+    background: linear-gradient(135deg, #f59e0b, #ec4899);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    text-shadow: none;
+    letter-spacing: 1px;
+}
+
+.ss-title-en {
+    font-size: 0.75rem;
+    font-weight: 700;
+    color: #64748b;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    margin-top: 4px;
+}
+
+/* Khối luật chơi */
+.ss-rules {
+    background: #fff8e6;
+    border: 2px solid #d4a05a;
+    border-radius: 12px;
+    padding: 14px 18px;
+    margin-bottom: 24px;
+    text-align: left;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.ss-rule-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 0.88rem;
+    color: #374151;
+    font-weight: 600;
+}
+
+.ss-rule-item strong {
+    color: #b45309;
+}
+
+.ss-rule-icon {
+    font-size: 1.3rem;
+    flex-shrink: 0;
+    width: 28px;
+    text-align: center;
+}
+
+/* NÚT BẮT ĐẦU TO CHIẾM SPOTLIGHT */
+.ss-btn-start {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    background: linear-gradient(135deg, #16a34a, #15803d);
+    color: white;
+    border: none;
+    outline: none;
+    padding: 18px 50px;
+    border-radius: 12px;
+    font-size: 1.3rem;
+    font-weight: 900;
+    letter-spacing: 1px;
+    cursor: pointer;
+    width: 100%;
+    box-shadow:
+        0 7px 0 #14532d,
+        0 12px 25px rgba(21, 128, 61, 0.5),
+        inset 0 2px 2px rgba(255,255,255,0.3);
+    transition: all 0.1s ease;
+    margin-bottom: 10px;
+    animation: pulse-glow 1.8s ease-in-out infinite;
+}
+
+@keyframes pulse-glow {
+    0%, 100% {
+        box-shadow: 0 7px 0 #14532d, 0 12px 25px rgba(21, 128, 61, 0.5), inset 0 2px 2px rgba(255,255,255,0.3);
+    }
+    50% {
+        box-shadow: 0 7px 0 #14532d, 0 12px 40px rgba(21, 128, 61, 0.8), 0 0 50px rgba(74, 222, 128, 0.3), inset 0 2px 2px rgba(255,255,255,0.3);
+    }
+}
+
+.ss-btn-start:hover {
+    transform: translateY(-3px);
+    filter: brightness(1.1);
+    box-shadow:
+        0 10px 0 #14532d,
+        0 18px 35px rgba(21, 128, 61, 0.6),
+        inset 0 2px 2px rgba(255,255,255,0.3);
+    animation: none;
+}
+
+.ss-btn-start:active {
+    transform: translateY(5px);
+    box-shadow: 0 2px 0 #14532d, 0 5px 10px rgba(21, 128, 61, 0.4);
+}
+
+.ss-btn-icon {
+    font-size: 1.5rem;
+    display: inline-block;
+    animation: blink-play 1s step-start infinite;
+}
+
+@keyframes blink-play {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.3; }
+}
+
+.ss-btn-text {
+    font-family: 'Press Start 2P', monospace;
+    font-size: 0.9rem;
+}
+
+/* Gợi ý phím tắt */
+.ss-hint {
+    font-size: 0.78rem;
+    color: #94a3b8;
+    margin-bottom: 18px;
+}
+
+kbd {
+    background: #e2e8f0;
+    border: 2px solid #cbd5e1;
+    border-bottom: 3px solid #94a3b8;
+    border-radius: 4px;
+    padding: 1px 7px;
+    font-family: monospace;
+    font-size: 0.8rem;
+    color: #334155;
+}
+
+/* Footer card - nhãn thương hiệu */
+.ss-footer-brand {
+    border-top: 2px dashed #d4a05a;
+    padding-top: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    font-size: 0.75rem;
+    color: #78716c;
+    font-weight: 600;
+}
+
+.ss-cg-badge {
+    background: #f59e0b;
+    color: #fff;
+    padding: 2px 8px;
+    border-radius: 4px;
+    font-weight: 900;
+    font-size: 0.75rem;
+    box-shadow: 2px 2px 0 #b45309;
+}
+
+/* Hiệu ứng chuyển màn hình: Start Screen fade out, game fade in */
+.start-screen.slide-out {
+    animation: slideOutUp 0.5s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+}
+
+@keyframes slideOutUp {
+    0% { transform: translateY(0); opacity: 1; }
+    100% { transform: translateY(-100%); opacity: 0; }
+}
+
+.fade-in-game {
+    animation: fadeInGame 0.4s ease forwards;
+}
+
+@keyframes fadeInGame {
+    0% { opacity: 0; transform: translateY(10px); }
+    100% { opacity: 1; transform: translateY(0); }
+}
+
+/* Responsive cho màn hình nhỏ */
+@media (max-width: 540px) {
+    .ss-card {
+        padding: 22px 18px 20px;
+    }
+
+    .ss-title-line1,
+    .ss-title-line2 {
+        font-size: 1.3rem;
+    }
+
+    .ss-btn-start {
+        padding: 16px 24px;
+    }
+
+    .ss-btn-text {
+        font-size: 0.75rem;
+    }
+}
+
+/* ==========================================================================
+   9. THANH TẬP TRUNG (FOCUS BAR)
+   ========================================================================== */
+
+.focus-bar-panel {
+    max-width: 760px;
+    margin: 10px auto 0;
+    width: 100%;
+    padding: 10px 20px 6px;
+    position: relative;
+    z-index: 10;
+}
+
+.focus-bar-header {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 6px;
+    font-size: 0.88rem;
+    font-weight: 800;
+    color: #1e293b;
+}
+
+.focus-bar-icon {
+    font-size: 1.1rem;
+}
+
+.focus-bar-pct {
+    margin-left: auto;
+    font-family: 'Press Start 2P', monospace;
+    font-size: 0.75rem;
+    color: #374151;
+    background: rgba(255,255,255,0.8);
+    border: 2px solid #c8862a;
+    padding: 2px 8px;
+    border-radius: 6px;
+    min-width: 56px;
+    text-align: center;
+    box-shadow: 1px 1px 0 rgba(139,94,60,0.3);
+    transition: color 0.4s ease;
+}
+
+/* Track của thanh */
+.focus-bar-track {
+    position: relative;
+    width: 100%;
+    height: 26px;
+    background: rgba(0,0,0,0.12);
+    border-radius: 8px;
+    border: 3px solid #8b5e3c;
+    overflow: hidden;
+    box-shadow: inset 0 2px 4px rgba(0,0,0,0.25), 2px 2px 0 rgba(139,94,60,0.4);
+}
+
+/* Fill của thanh - gradient đổi màu */
+.focus-bar-fill {
+    height: 100%;
+    width: 100%;
+    border-radius: 5px;
+    background: linear-gradient(90deg, #10b981, #34d399);
+    transition: width 0.2s linear, background 0.4s ease;
+    position: relative;
+}
+
+/* Hiệu ứng sóng bên trong thanh fill */
+.focus-bar-fill::after {
+    content: '';
+    position: absolute;
+    top: 0; left: -60%;
+    width: 60%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.35), transparent);
+    animation: focus-shine 1.8s linear infinite;
+}
+
+@keyframes focus-shine {
+    0%   { left: -60%; }
+    100% { left: 110%; }
+}
+
+/* Text hint nằm đè lên thanh */
+.focus-bar-hint {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 0.72rem;
+    font-weight: 800;
+    color: rgba(255,255,255,0.95);
+    text-shadow: 0 1px 3px rgba(0,0,0,0.5);
+    white-space: nowrap;
+    pointer-events: none;
+    letter-spacing: 0.5px;
+}
+
+/* === Trạng thái màu theo % === */
+
+/* Cao (>60%): Xanh lá - tập trung tốt */
+.focus-bar-fill.focus-high {
+    background: linear-gradient(90deg, #10b981, #34d399);
+    box-shadow: 0 0 10px rgba(16,185,129,0.5);
+}
+
+/* Trung bình (30-60%): Vàng cam - bắt đầu phân tâm */
+.focus-bar-fill.focus-mid {
+    background: linear-gradient(90deg, #f59e0b, #fbbf24);
+    box-shadow: 0 0 10px rgba(245,158,11,0.6);
+}
+
+/* Thấp (<30%): Đỏ - sắp nghiện game */
+.focus-bar-fill.focus-low {
+    background: linear-gradient(90deg, #ef4444, #f87171);
+    box-shadow: 0 0 14px rgba(239,68,68,0.8);
+    animation: focus-danger-pulse 0.5s ease-in-out infinite alternate;
+}
+
+/* Hết tập trung - bị nghiện game! */
+.focus-bar-fill.focus-addicted {
+    background: linear-gradient(90deg, #7c3aed, #a855f7);
+    box-shadow: 0 0 20px rgba(139,92,246,0.9);
+    width: 100% !important;
+    animation: addicted-glow 0.4s ease-in-out infinite alternate;
+}
+
+@keyframes focus-danger-pulse {
+    0%   { box-shadow: 0 0 8px rgba(239,68,68,0.6); }
+    100% { box-shadow: 0 0 22px rgba(239,68,68,1); }
+}
+
+@keyframes addicted-glow {
+    0%   { box-shadow: 0 0 15px rgba(139,92,246,0.7); filter: brightness(1); }
+    100% { box-shadow: 0 0 35px rgba(168,85,247,1);   filter: brightness(1.15); }
+}
+
+/* Cảnh báo nghiện game (banner đỏ dưới thanh) */
+.focus-addict-warning {
+    margin-top: 6px;
+    background: linear-gradient(135deg, #fef2f2, #fee2e2);
+    border: 2px solid #ef4444;
+    border-radius: 8px;
+    padding: 7px 14px;
+    font-size: 0.82rem;
+    color: #991b1b;
+    text-align: center;
+    box-shadow: 2px 2px 0 #b91c1c;
+    animation: warning-shake 0.4s ease infinite alternate;
+}
+
+.focus-addict-warning.hidden {
+    display: none;
+}
+
+@keyframes warning-shake {
+    0%   { transform: translateX(-2px); }
+    100% { transform: translateX(2px); }
+}
+
+/* Khi đã nghiện - nền panel đổi màu */
+.focus-bar-panel.addicted-state {
+    background: rgba(139, 92, 246, 0.12);
+    border-radius: 10px;
+    border: 2px dashed #8b5cf6;
+    padding: 10px 20px 10px;
+}
+
+/* Nút bị khoá (mờ đi) khi nghiện game */
+.action-btn.addicted-locked {
+    background: linear-gradient(135deg, #be185d, #e11d48) !important;
+    animation: addicted-btn-pulse 0.6s ease-in-out infinite alternate !important;
+    cursor: not-allowed;
+}
+
+@keyframes addicted-btn-pulse {
+    0%   { box-shadow: 0 6px 0 #9f1239, 0 8px 20px rgba(225,29,72,0.4); }
+    100% { box-shadow: 0 6px 0 #9f1239, 0 8px 35px rgba(225,29,72,0.9), 0 0 50px rgba(248,113,113,0.4); }
+}
+
+/* Label badge khi bị nghiện */
+.student-section.addicted-state .student-badge {
+    background: #7c3aed !important;
+    animation: blink 0.5s infinite alternate;
+}

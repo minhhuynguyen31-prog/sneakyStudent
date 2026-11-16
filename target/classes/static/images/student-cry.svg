@@ -1,0 +1,29 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 400" width="100%" height="100%">
+  <defs>
+    <linearGradient id="bgStudCry6" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#334155"/>
+      <stop offset="100%" stop-color="#0f172a"/>
+    </linearGradient>
+  </defs>
+
+  <rect width="400" height="400" fill="url(#bgStudCry6)"/>
+
+  <ellipse cx="200" cy="230" rx="65" ry="50" fill="#475569"/>
+  <circle cx="200" cy="165" r="40" fill="#fbcfe8"/>
+  <path d="M 160 160 Q 200 120 240 160 Q 220 145 180 145 Z" fill="#1e293b"/>
+
+  <path d="M 180 168 Q 188 160 196 168" stroke="#1e293b" stroke-width="3" fill="none"/>
+  <path d="M 204 168 Q 212 160 220 168" stroke="#1e293b" stroke-width="3" fill="none"/>
+  
+  <path d="M 175 168 C 150 175 140 220 145 250" fill="none" stroke="#38bdf8" stroke-width="6" stroke-linecap="round"/>
+  <path d="M 225 168 C 250 175 260 220 255 250" fill="none" stroke="#38bdf8" stroke-width="6" stroke-linecap="round"/>
+
+  <path d="M 188 195 Q 200 182 212 195" stroke="#1e293b" stroke-width="4" fill="none"/>
+
+  <rect x="30" y="280" width="340" height="110" fill="#52525b" rx="6"/>
+  <rect x="25" y="275" width="350" height="15" fill="#71717a" rx="3"/>
+
+  <!-- Laptop bi gap lai -->
+  <polygon points="130,295 270,295 250,280 150,280" fill="#475569"/>
+  <text x="200" y="335" fill="#fca5a5" font-family="sans-serif" font-size="12" font-weight="bold" text-anchor="middle">BIEN BAN VI PHAM KY LUAT :((</text>
+</svg>

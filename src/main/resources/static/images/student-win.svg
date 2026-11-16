@@ -1,0 +1,47 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 400" width="100%" height="100%">
+  <defs>
+    <linearGradient id="bgWin7" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#065f46"/>
+      <stop offset="100%" stop-color="#022c22"/>
+    </linearGradient>
+  </defs>
+
+  <rect width="400" height="400" fill="url(#bgWin7)"/>
+  
+  <!-- Phao hoa -->
+  <circle cx="80" cy="60" r="8" fill="#facc15"/>
+  <circle cx="320" cy="80" r="10" fill="#ec4899"/>
+  <circle cx="100" cy="140" r="6" fill="#38bdf8"/>
+  <circle cx="300" cy="150" r="7" fill="#4ade80"/>
+
+  <!-- Cup vang -->
+  <g transform="translate(200, 70)">
+    <path d="M -25 -20 L 25 -20 L 20 15 Q 0 35 -20 15 Z" fill="#facc15" stroke="#ca8a04" stroke-width="3"/>
+    <rect x="-8" y="25" width="16" height="15" fill="#ca8a04"/>
+    <rect x="-20" y="40" width="40" height="10" rx="3" fill="#a16207"/>
+    <text x="0" y="10" fill="#854d0e" font-size="14" font-weight="bold" text-anchor="middle">*</text>
+  </g>
+
+  <!-- Sinh vien gio 2 tay chien thang -->
+  <path d="M 155 200 L 110 130" stroke="#fbcfe8" stroke-width="16" stroke-linecap="round"/>
+  <path d="M 245 200 L 290 130" stroke="#fbcfe8" stroke-width="16" stroke-linecap="round"/>
+  <circle cx="105" cy="125" r="12" fill="#fbcfe8"/>
+  <circle cx="295" cy="125" r="12" fill="#fbcfe8"/>
+
+  <ellipse cx="200" cy="230" rx="60" ry="50" fill="#10b981"/>
+  <rect x="160" y="220" width="80" height="60" fill="#059669" rx="8"/>
+
+  <!-- Dau kinh ram cool ngau -->
+  <circle cx="200" cy="170" r="38" fill="#fbcfe8"/>
+  <path d="M 165 165 Q 200 130 235 165 Q 220 150 180 150 Z" fill="#1e293b"/>
+  <polygon points="175,165 195,165 190,178 175,178" fill="#0f172a"/>
+  <polygon points="205,165 225,165 225,178 210,178" fill="#0f172a"/>
+  <line x1="195" y1="168" x2="205" y2="168" stroke="#0f172a" stroke-width="3"/>
+  <path d="M 190 188 Q 200 198 210 188" stroke="#1e293b" stroke-width="3" fill="none"/>
+
+  <!-- Ban va Laptop -->
+  <rect x="30" y="300" width="340" height="90" fill="#52525b" rx="6"/>
+  <rect x="25" y="295" width="350" height="15" fill="#71717a" rx="3"/>
+  <rect x="140" y="255" width="120" height="60" rx="4" fill="#0f172a" stroke="#10b981" stroke-width="3"/>
+  <text x="200" y="290" fill="#34d399" font-family="monospace" font-size="11" font-weight="bold" text-anchor="middle">PASS 100%!</text>
+</svg>
